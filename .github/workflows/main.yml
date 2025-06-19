@@ -1,0 +1,30 @@
+name: CI and CD to HuggingSpace
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  run_test_case:
+
+    runs-on: ubuntu-latest
+    env:
+      GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+      TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.11
+
+      - name: Set up Dependencies
+        run: |
+          make install
+
+      - name: Test with pytest
+        run: |
+          make test
