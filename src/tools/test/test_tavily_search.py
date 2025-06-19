@@ -9,10 +9,10 @@ class TestTavilySearcher:
     def test_search(self):
         reply = self.searcher.invoke("Federated learning")
 
-        assert type(reply) is list
-        assert type(reply[0]) is dict
+        assert type(reply) is dict
+        assert type(reply['results']) is list
 
-        for r in reply:
+        for r in reply['results']:
             print(r['content'])
             print(f"Source: {r['url']}")
             print('~'*80)
