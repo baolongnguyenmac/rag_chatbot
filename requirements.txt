@@ -15,6 +15,6 @@ langchain-chroma==0.2.4                 # vector db
 # tool
 pypdf==5.6.0                            # read pdf
 protobuf==3.20.2                        # avoid conflict with chroma db
-tavily-python==0.7.6                    # search tool (on the internet)
+langchain-tavily==0.2.3                 # search tool (on the internet)
 
 pytest==8.4.1                           # pytest -v
