@@ -1,3 +1,7 @@
+demo*
+.vscode
+.github
+*.pdf
 assets
 
 # Byte-compiled / optimized / DLL files

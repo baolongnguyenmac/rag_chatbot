@@ -1,0 +1,10 @@
+services:
+  chatbot:
+    build:
+      context: .
+    container_name: ctn_chatbot
+    env_file:
+      - .env
+
+    ports:
+      - 5555:7860

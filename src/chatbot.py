@@ -98,7 +98,7 @@ class ChatBot:
             bot_msg = chat_input.submit(fn=add_message, inputs=[chat_input, chat_output], outputs=[chat_input, chat_output], queue=False)
             bot_msg.then(fn=get_reply, inputs=chat_output, outputs=chat_output)
 
-        demo.launch(server_name='localhost', server_port=7680)
+        demo.launch(server_name='0.0.0.0', server_port=7860)
 
 def main():
     load_dotenv()
