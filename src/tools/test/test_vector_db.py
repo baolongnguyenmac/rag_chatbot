@@ -3,18 +3,21 @@ from langchain_core.documents.base import Document
 
 from shutil import rmtree
 
+import os
 from dotenv import load_dotenv
 load_dotenv()
 
 class TestVectorDB:
     persist_directory='./src/tools/test/assets'
     collection_name='test'
-    filepath = './data/pdf/2021 survey FL.pdf'
-
     vector_db = VectorDB(
         collection_name=collection_name,
         persist_directory=persist_directory
     )
+
+    filepath = './src/tools/test/assets/test.pdf'
+    pdf_url = 'https://arxiv.org/pdf/1912.04977'
+    os.system(f'curl -sSL -o {filepath} {pdf_url}')
 
     def test_get_chunk(self):
         # filepath = './data/2021 survey FL.pdf'
