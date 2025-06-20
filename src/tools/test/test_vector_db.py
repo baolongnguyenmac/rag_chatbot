@@ -9,7 +9,7 @@ load_dotenv()
 class TestVectorDB:
     persist_directory='./src/tools/test/assets'
     collection_name='test'
-    filepath = './data/2021 survey FL.pdf'
+    filepath = './data/pdf/2021 survey FL.pdf'
 
     vector_db = VectorDB(
         collection_name=collection_name,
