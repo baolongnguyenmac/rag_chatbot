@@ -50,7 +50,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: ${{ vars.DOCKER_USERNAME }}/chatbot:latest
+          tags: ${{ vars.DOCKER_USERNAME }}/chatbot_rag:latest
           platforms: linux/amd64,linux/arm64
 
   push_HF_space:
