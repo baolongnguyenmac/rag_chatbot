@@ -30,10 +30,58 @@ class ChatRAG(ChatBot):
         graph = self.init_graph()
 
         def add_message(history:list[dict], message:dict):
-            pass
+            has_file = False
+            list_files = []
+            for filepath in message["files"]:
+                has_file = True
+                history.append({"role": "user", "content": {"path": filepath}})
+
+                filename = filepath.split("/")[-1]
+                gr.Info(f'Importing {filename} into database', duration=0)
+                self.vector_db.add_doc(filepath)
+                list_files.append(filename)
+
+            # i want to explicitly demonstrate what I input to LLM to make it read the file
+            # thus, i explicitly modify the user input
+            # otherwise, these modification can be implicitly done in `get_reply` function
+            if has_file:
+                if message["text"] != '':
+                    history.append({"role": "user", "content": f"{message['text']}. {list_files} are already in the vector database"})
+                else:
+                    history.append({"role": "user", "content": f"Summarize the content of these file {list_files}. They are already in the vector database"})
+            else:
+                history.append({"role": "user", "content": message['text']})
+
+            # if has_file, we have to wait for it to be loaded in db
+            return history, gr.MultimodalTextbox(value=None, interactive=has_file)
 
         def get_reply(history: list):
-            pass
+            # [print(h['content']) for h in history]
+            # print('~'*80)
+
+            # list_input = []
+            # if type(history[-1]['content']) is tuple:
+            #     list_input.append('Read these files. They are already in the vector database')
+            # for item in reversed(history):
+            #     if item['role'] != 'user':
+            #         break
+            #     else:
+            #         content = item['content']
+            #         if type(item['content']) is tuple:
+            #             content = content[0].split('/')[-1]
+            #         list_input.append(content)
+
+            # print(list_input)
+            # bot_message = graph.invoke(input={"messages": HumanMessage('. '.join(list_input))}, config=config)
+
+            bot_message = graph.invoke(input={"messages": HumanMessage(history[-1]['content'])}, config=config)
+            bot_message = bot_message['messages'][-1].content
+
+            history.append({"role": "assistant", "content": ""})
+            for character in bot_message:
+                history[-1]["content"] += character
+                time.sleep(0.01)
+                yield history
 
         with gr.Blocks(theme='gstaff/xkcd', title='ChatBot', fill_height=True) as demo:
             gr.Markdown("<h1 style='text-align: center;'>ChatBot</h1>")
