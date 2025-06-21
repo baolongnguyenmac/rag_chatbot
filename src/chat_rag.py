@@ -1,3 +1,4 @@
+from tools.tavily_search import TavilySearcher
 from tools.vector_db import VectorDB
 from chatbot import ChatBot
 
@@ -14,16 +15,19 @@ class ChatRAG(ChatBot):
     def __init__(self, collection_name:str, persist_directory:str):
         super().__init__()
         self.vector_db = VectorDB(collection_name, persist_directory)
+        self.search_tool = TavilySearcher(max_results=10)
 
     def init_graph(self):
         retrieve = self.vector_db.get_db_searcher(k=10)
+        search = self.search_tool.get_tavily_searcher()
 
         memory = MemorySaver()
         return create_react_agent(
             model=self.llm,
-            tools=[retrieve],
+            tools=[retrieve, search],
             checkpointer=memory,
-            prompt=SystemMessage("You talk like a scumbag but always try your best to answer the query. You only answer the question based on given documents if and only if needed (when the query is about the content in documents).")
+            prompt=SystemMessage("The person who deployed you is Nguyen Bao Long. He got his master degree at JAIST. You are a helpful chatbot that always try your best to answer user query.")
+            # prompt=SystemMessage("You talk like a scumbag but always try your best to answer the query. You only answer the question based on given documents if and only if needed (when the query is about the content in documents).")
         )
 
     def chat_gradio(self, config:dict):
