@@ -8,3 +8,9 @@ services:
 
     ports:
       - 5555:7860
+
+#     volumes:
+#       - vector-db:/app/data
+
+# volumes:
+#   vector-db:

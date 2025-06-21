@@ -12,7 +12,7 @@ ENV HOME=/home/user \
 
 WORKDIR /app
 
-COPY --chown=user . .
+COPY . .
 
 RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
