@@ -27,9 +27,12 @@ class VectorDB:
         return chunks
 
     def add_doc(self, filepath:str) -> None:
+        print(f'Import {filepath.split("/")[-1]}')
         chunks:list[Document] = self.get_chunk(filepath)
         # TODO: kiếm cách tích hợp id vào đây bằng hàm băm
         self.vector_store.add_documents(chunks)
+        print(f'{filepath.split("/")[-1]} imported!')
+        print('~'*80)
 
     def similarity_search(self, query:str, k:int) -> list[Document]:
         return self.vector_store.similarity_search(query=query, k=k)
@@ -55,8 +58,10 @@ class VectorDB:
                 content (str): A string of relevant content
                 relevant_docs (list[Document]): a list of relevant documents
             """
+            print(f'Get data with {query}')
             relevant_docs = self.vector_store.similarity_search(query=query, k=k)
             content = '\n\n'.join([doc.page_content for doc in relevant_docs])
+            print('~'*80)
             return content, relevant_docs
 
         return retrieve

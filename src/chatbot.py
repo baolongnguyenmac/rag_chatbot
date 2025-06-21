@@ -74,26 +74,26 @@ class ChatBot:
     def chat_gradio(self, config:dict):
         graph:CompiledStateGraph = self.init_graph()
 
+        def add_message(user_message:str, history:list[dict]):
+            history.append({"role": "user", "content": user_message})
+            return "", history
+
+        def get_reply(history:list[dict]):
+            bot_message = graph.invoke(input={"messages": HumanMessage(history[-1]["content"])}, config=config)
+            bot_message = bot_message['messages'][-1].content
+
+            # streaming to chat
+            history.append({"role": "assistant", "content": ""})
+            for character in bot_message:
+                history[-1]['content'] += character
+                time.sleep(0.01)
+                yield history
+
         with gr.Blocks(theme='gstaff/xkcd', title='ChatBot', fill_height=True) as demo:
             gr.Markdown("<h1 style='text-align: center;'>ChatBot</h1>")
 
             chat_output = gr.Chatbot(type="messages", label='Assistant', scale=1)
-            chat_input = gr.Textbox(show_label=False, placeholder='Enter your query...', scale=0)
-
-            def add_message(user_message:str, history:list[dict]):
-                history.append({"role": "user", "content": user_message})
-                return "", history
-
-            def get_reply(history:list[dict]):
-                bot_message = graph.invoke(input={"messages": HumanMessage(history[-1]["content"])}, config=config)
-                bot_message = bot_message['messages'][-1].content
-
-                # streaming to chat
-                history.append({"role": "assistant", "content": ""})
-                for character in bot_message:
-                    history[-1]['content'] += character
-                    time.sleep(0.01)
-                    yield history
+            chat_input = gr.Textbox(show_label=False, placeholder='Enter your query...', scale=0, interactive=True)
 
             bot_msg = chat_input.submit(fn=add_message, inputs=[chat_input, chat_output], outputs=[chat_input, chat_output], queue=False)
             bot_msg.then(fn=get_reply, inputs=chat_output, outputs=chat_output)
