@@ -27,7 +27,9 @@ class TestVectorDB:
         assert type(docs[0]) is Document
 
     def test_add_doc(self):
-        # filepath = './data/2021 survey FL.pdf'
+        # TODO test id
+        # self.vector_db.vector_store.get_by_ids('id') == chunk.page_content
+
         self.vector_db.add_doc(self.filepath)
 
     def test_similarity_search(self):

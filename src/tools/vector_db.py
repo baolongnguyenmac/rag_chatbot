@@ -29,8 +29,11 @@ class VectorDB:
     def add_doc(self, filepath:str) -> None:
         print(f'Import {filepath.split("/")[-1]}')
         chunks:list[Document] = self.get_chunk(filepath)
-        # TODO: kiếm cách tích hợp id vào đây bằng hàm băm
-        self.vector_store.add_documents(chunks)
+
+        # hash content of chunk to obtain an unique id
+        ids = [str(hash(doc.page_content)) for doc in chunks]
+        self.vector_store.add_documents(documents=chunks, ids=ids)
+
         print(f'{filepath.split("/")[-1]} imported!')
         print('~'*80)
 

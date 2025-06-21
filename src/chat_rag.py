@@ -23,7 +23,7 @@ class ChatRAG(ChatBot):
             model=self.llm,
             tools=[retrieve],
             checkpointer=memory,
-            prompt=SystemMessage("You will be provided some research papers about a research topic. You will answer the question based on these papers if and only if needed (when the query is about the research topic).")
+            prompt=SystemMessage("You talk like a scumbag but always try your best to answer the query. You only answer the question based on given documents if and only if needed (when the query is about the content in documents).")
         )
 
     def chat_gradio(self, config:dict):
@@ -46,7 +46,7 @@ class ChatRAG(ChatBot):
             # otherwise, these modification can be implicitly done in `get_reply` function
             if has_file:
                 if message["text"] != '':
-                    history.append({"role": "user", "content": f"{message['text']}. {list_files} are already in the vector database"})
+                    history.append({"role": "user", "content": f"{list_files} are already in the vector database. {message['text']}"})
                 else:
                     history.append({"role": "user", "content": f"Summarize the content of these file {list_files}. They are already in the vector database"})
             else:
@@ -77,6 +77,7 @@ class ChatRAG(ChatBot):
             bot_message = graph.invoke(input={"messages": HumanMessage(history[-1]['content'])}, config=config)
             bot_message = bot_message['messages'][-1].content
 
+            # streaming answer
             history.append({"role": "assistant", "content": ""})
             for character in bot_message:
                 history[-1]["content"] += character
@@ -84,10 +85,10 @@ class ChatRAG(ChatBot):
                 yield history
 
         with gr.Blocks(theme='gstaff/xkcd', title='ChatBot', fill_height=True) as demo:
-            gr.Markdown("<h1 style='text-align: center;'>ChatBot</h1>")
+            gr.Markdown("<h1 style='text-align: center;'>NBLong's Assistant</h1>")
 
-            chat_output = gr.Chatbot(elem_id="chatbot", bubble_full_width=False, type="messages", scale=1)
-            chat_input = gr.MultimodalTextbox(interactive=True, file_count="multiple", placeholder="Enter message or upload PDF file", show_label=False, sources=["upload"], file_types=['.pdf'], scale=0)
+            chat_output = gr.Chatbot(elem_id="chatbot", type="messages", scale=1, label='Output')
+            chat_input = gr.MultimodalTextbox(interactive=True, file_count="multiple", placeholder="Enter message or upload PDF files", show_label=False, sources=["upload"], file_types=['.pdf'], scale=0)
 
             chat_msg = chat_input.submit(add_message, [chat_output, chat_input], [chat_output, chat_input])
             bot_msg = chat_msg.then(get_reply, chat_output, chat_output, api_name="bot_response")
