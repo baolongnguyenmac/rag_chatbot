@@ -15,10 +15,10 @@ from dotenv import load_dotenv
 
 class ChatBot:
     def __init__(self):
-        self.llm:BaseChatModel = init_chat_model("gemini-2.0-flash", model_provider="google_genai")
-        # max input token of gemini-2.0-flash: 1,048,576 (https://cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/2-0-flash)
+        self.llm:BaseChatModel = init_chat_model("gemini-2.5-flash", model_provider="google_genai")
+        # max input token of gemini-2.5-flash: 1,048,576 (https://cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/2-5-flash)
         self.trimmer = trim_messages(
-            max_tokens=100_000,
+            max_tokens=200_000,
             strategy="last",
             token_counter=self.llm,
             include_system=True,

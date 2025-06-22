@@ -4,10 +4,9 @@ from tools.tavily_search import TavilySearcher
 from langgraph.graph.state import CompiledStateGraph
 from langgraph.prebuilt import create_react_agent
 from langgraph.checkpoint.memory import MemorySaver
-from langchain_core.messages import SystemMessage, HumanMessage
+from langchain_core.messages import SystemMessage
 
 from dotenv import load_dotenv
-import gradio as gr
 
 class ChatSearch(ChatBot):
     def __init__(self, max_results:int):
