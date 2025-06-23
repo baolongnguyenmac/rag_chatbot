@@ -12,5 +12,6 @@ services:
 #     volumes:
 #       - vector-db:/app/data
 
+# # persist data: it's a paid feature in HF Space, so i comment these lines
 # volumes:
 #   vector-db:
