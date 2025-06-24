@@ -1,0 +1,19 @@
+# python 3.11
+# pip-tools-7.4.1
+
+python-dotenv
+gradio
+
+# lang stuff
+langchain
+langgraph
+langchain-google-genai
+langchain-community
+langchain-chroma
+
+# tool
+pypdf
+protobuf
+langchain-tavily
+
+pytest
