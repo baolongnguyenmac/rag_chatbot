@@ -1,8 +1,9 @@
 from tools.vector_db import VectorDB
+from extractor.pdf_chunking import PDFChunking
+
 from langchain_core.documents.base import Document
 
 from shutil import rmtree
-
 import os
 from dotenv import load_dotenv
 load_dotenv()
@@ -19,17 +20,7 @@ class TestVectorDB:
     pdf_url = 'https://arxiv.org/pdf/1912.04977'
     os.system(f'curl -sSL -o {filepath} {pdf_url}')
 
-    def test_get_chunk(self):
-        # filepath = './data/2021 survey FL.pdf'
-        docs = self.vector_db.get_chunk(self.filepath)
-
-        assert type(docs) is list
-        assert type(docs[0]) is Document
-
     def test_add_doc(self):
-        # TODO test id
-        # self.vector_db.vector_store.get_by_ids('id') == chunk.page_content
-
         self.vector_db.add_doc(self.filepath)
 
     def test_similarity_search(self):

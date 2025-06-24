@@ -1,6 +1,4 @@
-# chunking
-from langchain_community.document_loaders import PyPDFLoader
-from langchain_text_splitters import RecursiveCharacterTextSplitter as Splitter
+from extractor.pdf_chunking import PDFChunking
 
 # embedding and storing
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
@@ -18,17 +16,9 @@ class VectorDB:
             persist_directory=persist_directory
         )
 
-    def get_chunk(self, filepath:str) -> list[Document]:
-        loader:PyPDFLoader = PyPDFLoader(file_path=filepath)
-        doc:list[Document] = loader.load()
-
-        text_splitter:Splitter = Splitter(chunk_size=1000, chunk_overlap=200, add_start_index=True)
-        chunks:list[Document] = text_splitter.split_documents(doc)
-        return chunks
-
     def add_doc(self, filepath:str) -> None:
         print(f'Import {filepath.split("/")[-1]}')
-        chunks:list[Document] = self.get_chunk(filepath)
+        chunks:list[Document] = PDFChunking.get_chunk(filepath)
 
         # hash content of chunk to obtain an unique id
         ids = [str(hash(doc.page_content)) for doc in chunks]
