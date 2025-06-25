@@ -233,6 +233,7 @@ numpy==2.3.0
     #   langchain-chroma
     #   langchain-community
     #   onnxruntime
+    #   opencv-python
     #   pandas
 oauthlib==3.3.0
     # via
@@ -240,6 +241,8 @@ oauthlib==3.3.0
     #   requests-oauthlib
 onnxruntime==1.22.0
     # via chromadb
+opencv-python==4.11.0.86
+    # via -r requirements.in
 opentelemetry-api==1.27.0
     # via
     #   chromadb
@@ -356,6 +359,8 @@ python-dotenv==1.1.0
     #   uvicorn
 python-multipart==0.0.20
     # via gradio
+pytubefix==9.2.2
+    # via -r requirements.in
 pytz==2025.2
     # via pandas
 pyyaml==6.0.2
@@ -484,6 +489,8 @@ websockets==15.0.1
     # via
     #   gradio-client
     #   uvicorn
+pysrt==1.1.2
+    # via -r requirements.in
 wrapt==1.17.2
     # via deprecated
 xxhash==3.5.0

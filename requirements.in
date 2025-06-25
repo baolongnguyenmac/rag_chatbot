@@ -16,4 +16,9 @@ pypdf
 protobuf
 langchain-tavily
 
+# youtube video + sub
+opencv-python
+pytubefix
+pysrt
+
 pytest
