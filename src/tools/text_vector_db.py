@@ -6,7 +6,7 @@ from langchain_chroma.vectorstores import Chroma
 from langchain_core.documents.base import Document
 
 # tool
-from langchain_core.tools import tool
+from langchain_core.tools import tool, BaseTool
 
 class TextVectorDB:
     def __init__(self, collection_name:str, persist_directory:str) -> None:
@@ -17,7 +17,7 @@ class TextVectorDB:
         )
 
     def add_doc(self, filepath:str) -> None:
-        print(f'Import: {filepath.split("/")[-1]}')
+        print(f'Import document: {filepath.split("/")[-1]}')
         chunks:list[Document] = TextChunking.get_pdf_chunk(filepath)
 
         # hash content of chunk to obtain an unique id
@@ -28,7 +28,7 @@ class TextVectorDB:
         print('~'*80)
 
     def add_sub(self, filepath:str) -> None:
-        print(f'Import {filepath.split("/")[-1]}')
+        print(f'Import subtitle: {filepath.split("/")[-1]}')
         chunks:list[Document] = TextChunking.get_srt_chunk(filepath)
 
         # hash content of chunk to obtain an unique id
@@ -41,7 +41,7 @@ class TextVectorDB:
     def similarity_search(self, query:str, k:int) -> list[Document]:
         return self.vector_store.similarity_search(query=query, k=k)
 
-    def get_db_searcher(self, k:int):
+    def get_text_db_searcher(self, k:int) -> BaseTool:
         """return a semantic search tool that searches for relevant documents in vector db with a given query
 
         Args:
@@ -52,7 +52,7 @@ class TextVectorDB:
         """
 
         @tool(response_format='content_and_artifact')
-        def retrieve(query:str) -> tuple[str, list[Document]]:
+        def text_retrieve(query:str) -> tuple[str, list[Document]]:
             """Search for relevant contents in vector database with a given query
 
             Args:
@@ -62,10 +62,10 @@ class TextVectorDB:
                 content (str): A string of relevant content
                 relevant_docs (list[Document]): a list of relevant documents
             """
-            print(f'Get data with {query}')
+            print(f'Text retrieve with query: {query}')
             relevant_docs = self.vector_store.similarity_search(query=query, k=k)
             content = '\n\n'.join([doc.page_content for doc in relevant_docs])
             print('~'*80)
             return content, relevant_docs
 
-        return retrieve
+        return text_retrieve

@@ -1,5 +1,4 @@
 from tools.text_vector_db import TextVectorDB
-from extractor.text_chunking import TextChunking
 
 from langchain_core.documents.base import Document
 
@@ -8,15 +7,15 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-class TestVectorDB:
-    persist_directory='./src/tools/test/assets'
-    collection_name='test'
+class TestTextVectorDB:
+    persist_directory='./src/tools/test/text_db'
+    collection_name='test_text'
     vector_db = TextVectorDB(
         collection_name=collection_name,
         persist_directory=persist_directory
     )
 
-    filepath = './src/tools/test/assets/test.pdf'
+    filepath = os.path.join(persist_directory, 'test.pdf')
     pdf_url = 'https://arxiv.org/pdf/1912.04977'
     os.system(f'curl -sSL -o {filepath} {pdf_url}')
 
@@ -36,5 +35,5 @@ class TestVectorDB:
         rmtree(self.persist_directory)
 
 if __name__=='__main__':
-    tester = TestVectorDB()
+    tester = TestTextVectorDB()
     tester.test_remove_collection()
