@@ -24,7 +24,7 @@ class VideoChunking:
         return os.path.join(video_dir, f"{title}.mp4"), os.path.join(video_dir, f"{title}.srt")
 
     @staticmethod
-    def get_chunk(video_path:str, sub_path:str) -> list[dict]:
+    def get_video_chunk(video_path:str, sub_path:str) -> list[dict]:
         video = cv2.VideoCapture(video_path)
         trans = pysrt.open(sub_path)
 
@@ -40,7 +40,7 @@ class VideoChunking:
 
             end = transcript.end
             end = (end.minutes*60 + end.seconds)*1000 + end.milliseconds
-            print(start, end)
+            # print(start, end)
 
             mid = (start+end)/2
             video.set(cv2.CAP_PROP_POS_MSEC, mid)
@@ -61,4 +61,6 @@ class VideoChunking:
         return meta_data
 
 if __name__=='__main__':
-    VideoChunking.download_url('https://www.youtube.com/watch?v=aJ8IzovujMk')
+    video_path, sub_path = VideoChunking.download_url('https://www.youtube.com/watch?v=alDhOLhbkbY')
+    VideoChunking.get_video_chunk(video_path, sub_path)
+

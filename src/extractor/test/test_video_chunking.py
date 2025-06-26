@@ -23,9 +23,9 @@ class TestVideoChunking:
 
         # rmtree(os.path.dirname(video_path))
 
-    def test_get_chunk(self):
+    def test_get_video_chunk(self):
         video_path, sub_path = VideoChunking.download_url(self.url)
-        meta_data = VideoChunking.get_chunk(video_path, sub_path)
+        meta_data = VideoChunking.get_video_chunk(video_path, sub_path)
 
         assert len(meta_data) != 0
 

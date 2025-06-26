@@ -1,5 +1,5 @@
-from tools.vector_db import VectorDB
-from extractor.pdf_chunking import PDFChunking
+from tools.text_vector_db import TextVectorDB
+from extractor.text_chunking import TextChunking
 
 from langchain_core.documents.base import Document
 
@@ -11,7 +11,7 @@ load_dotenv()
 class TestVectorDB:
     persist_directory='./src/tools/test/assets'
     collection_name='test'
-    vector_db = VectorDB(
+    vector_db = TextVectorDB(
         collection_name=collection_name,
         persist_directory=persist_directory
     )
