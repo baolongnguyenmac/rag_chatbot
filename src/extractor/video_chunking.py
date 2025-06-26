@@ -51,11 +51,10 @@ class VideoChunking:
                 cv2.imwrite(img_path, frame)
 
                 meta_data.append({
-                    'extracted_frame_path': img_path,
+                    'frame_path': img_path,
+                    'start': str(transcript.start),
+                    'end': str(transcript.end),
                     'transcript': transcript.text,
-                    'video_segment_id': idx,
-                    # 'video_path': path_to_video,
-                    'mid_time_ms': mid,
                 })
 
         return meta_data
