@@ -1,6 +1,7 @@
-from tools.tavily_search import TavilySearcher
-from tools.vector_db import VectorDB
+from tools.text_vector_db import TextVectorDB
+from tools.img_vector_db import ImageVectorDB
 from chatbot import ChatBot
+from extractor.video_chunking import VideoChunking
 
 from langchain_core.messages import SystemMessage, HumanMessage
 from langgraph.prebuilt import create_react_agent
@@ -12,19 +13,31 @@ from dotenv import load_dotenv
 
 
 class ChatRAG(ChatBot):
-    def __init__(self, collection_name:str, persist_directory:str):
+    def __init__(self, persist_directory:str, text_collection_name:str='text_collection', img_collection_name:str='img_collection'):
         super().__init__()
-        self.vector_db = VectorDB(collection_name, persist_directory)
+        self.text_vector_db = TextVectorDB(text_collection_name, persist_directory)
+        self.img_vector_db = ImageVectorDB(img_collection_name, persist_directory)
 
     def init_graph(self):
-        retrieve = self.vector_db.get_db_searcher(k=10)
+        sys_prompt = '''
+MISSION: You are given a video and a corresponding subtitle file, stored in 2 separate vector databases. Your task is to answer user questions by querying one (or both) of the databases using the provided tools.
+
+TOOLS:
+    - Query the subtitle using `text_retrieve` tool (input is a string)
+    - Query the image using `img_retrieve_by_img` tool (input is a path to the query image)
+    - Query the image using `img_retrieve_by_text` tool (input is a description to search for images)
+'''
 
         memory = MemorySaver()
         return create_react_agent(
             model=self.llm,
-            tools=[retrieve],
+            tools=[
+                self.text_vector_db.get_text_db_searcher(k=5),
+                self.img_vector_db.search_img_by_text(k=5),
+                self.img_vector_db.search_img_by_img(k=5),
+            ],
             checkpointer=memory,
-            prompt=SystemMessage("You talk like a scumbag but always try your best to answer the query. You only answer the question based on given documents if and only if needed (when the query is about the content in documents).")
+            prompt=SystemMessage(sys_prompt)
         )
 
     def chat_gradio(self, config:dict):
@@ -32,50 +45,30 @@ class ChatRAG(ChatBot):
 
         def add_message(history:list[dict], message:dict):
             has_file = False
-            list_files = []
             for filepath in message["files"]:
                 has_file = True
                 history.append({"role": "user", "content": {"path": filepath}})
 
-                filename = filepath.split("/")[-1]
-                gr.Info(f'Importing {filename} into database', duration=0)
-                self.vector_db.add_doc(filepath)
-                list_files.append(filename)
-
-            # i want to explicitly demonstrate what I input to LLM to make it read the file
-            # thus, i explicitly modify the user input
-            # otherwise, these modification can be implicitly done in `get_reply` function
-            if has_file:
-                if message["text"] != '':
-                    history.append({"role": "user", "content": f"{list_files} are already in the vector database. {message['text']}"})
-                else:
-                    history.append({"role": "user", "content": f"Summarize the content of these file {list_files}. They are already in the vector database"})
-            else:
+            if message["text"] != '':
                 history.append({"role": "user", "content": message['text']})
 
             # if has_file, we have to wait for it to be loaded in db
             return history, gr.MultimodalTextbox(value=None, interactive=has_file)
 
         def get_reply(history: list):
-            # [print(h['content']) for h in history]
+            # print('~'*80)
+            # [print(h, '\n') for h in history]
             # print('~'*80)
 
-            # list_input = []
-            # if type(history[-1]['content']) is tuple:
-            #     list_input.append('Read these files. They are already in the vector database')
-            # for item in reversed(history):
-            #     if item['role'] != 'user':
-            #         break
-            #     else:
-            #         content = item['content']
-            #         if type(item['content']) is tuple:
-            #             content = content[0].split('/')[-1]
-            #         list_input.append(content)
+            latest_content = history[-1]['content']
+            # check if the previous of latest_content is a file
+            if type(latest_content) is not tuple:
+                pre_latest_content = history[-2]
+                if pre_latest_content['role']=='user' and type(pre_latest_content['content']) is tuple:
+                    latest_content = ' '.join([latest_content, str(pre_latest_content['content'])])
+            print(latest_content)
 
-            # print(list_input)
-            # bot_message = graph.invoke(input={"messages": HumanMessage('. '.join(list_input))}, config=config)
-
-            bot_message = graph.invoke(input={"messages": HumanMessage(history[-1]['content'])}, config=config)
+            bot_message = graph.invoke(input={"messages": HumanMessage(latest_content)}, config=config)
             bot_message = bot_message['messages'][-1].content
 
             # streaming answer
@@ -89,20 +82,32 @@ class ChatRAG(ChatBot):
             gr.Markdown("<h1 style='text-align: center;'>NBLong's Assistant</h1>")
 
             chat_output = gr.Chatbot(elem_id="chatbot", type="messages", scale=1, label='Output')
-            chat_input = gr.MultimodalTextbox(interactive=True, file_count="multiple", placeholder="Enter message or upload PDF files", show_label=False, sources=["upload"], file_types=['.pdf'], scale=0)
+            chat_input = gr.MultimodalTextbox(
+                interactive=True,
+                file_count="multiple",
+                placeholder="Enter message or upload an image",
+                show_label=False,
+                sources=["upload"],
+                file_types=['image'],
+                scale=0
+            )
 
             chat_msg = chat_input.submit(add_message, [chat_output, chat_input], [chat_output, chat_input])
             bot_msg = chat_msg.then(get_reply, chat_output, chat_output, api_name="bot_response")
             bot_msg.then(lambda: gr.MultimodalTextbox(interactive=True), None, [chat_input])
 
         demo.launch(server_name="0.0.0.0", server_port=7860)
+        print()
 
 if __name__=='__main__':
+
     load_dotenv()
     config = {"configurable": {"thread_id": "chatbot_2"}}
 
-    chat_search = ChatRAG(
-        collection_name='federated_learning',
-        persist_directory='./data/db'
-    )
+    chat_search = ChatRAG(persist_directory='./data/db')
+    # url = 'https://www.youtube.com/watch?v=alDhOLhbkbY' # Vấn Đề Máy Tính Bảng Android
+    # video_path, sub_path = VideoChunking.download_url(url)
+    # chat_search.text_vector_db.add_sub(sub_path)
+    # chat_search.img_vector_db.add_video(video_path, sub_path)
+
     chat_search.chat_gradio(config)
