@@ -6,14 +6,6 @@
 #
 aiofiles==24.1.0
     # via gradio
-aiohappyeyeballs==2.6.1
-    # via aiohttp
-aiohttp==3.12.13
-    # via
-    #   langchain-community
-    #   langchain-tavily
-aiosignal==1.3.2
-    # via aiohttp
 annotated-types==0.7.0
     # via pydantic
 anyio==4.9.0
@@ -24,7 +16,6 @@ anyio==4.9.0
     #   watchfiles
 attrs==25.3.0
     # via
-    #   aiohttp
     #   jsonschema
     #   referencing
 backoff==2.2.1
@@ -41,18 +32,20 @@ certifi==2025.6.15
     #   httpx
     #   kubernetes
     #   requests
+chardet==5.2.0
+    # via pysrt
 charset-normalizer==3.4.2
     # via requests
 chromadb==1.0.13
-    # via langchain-chroma
+    # via
+    #   -r requirements.in
+    #   langchain-chroma
 click==8.2.1
     # via
     #   typer
     #   uvicorn
 coloredlogs==15.0.1
     # via onnxruntime
-dataclasses-json==0.6.7
-    # via langchain-community
 deprecated==1.2.18
     # via
     #   opentelemetry-api
@@ -72,10 +65,6 @@ filetype==1.2.0
     # via langchain-google-genai
 flatbuffers==25.2.10
     # via onnxruntime
-frozenlist==1.7.0
-    # via
-    #   aiohttp
-    #   aiosignal
 fsspec==2025.5.1
     # via
     #   gradio-client
@@ -128,8 +117,6 @@ httpx==0.28.1
     #   langgraph-sdk
     #   langsmith
     #   safehttpx
-httpx-sse==0.4.0
-    # via langchain-community
 huggingface-hub==0.33.0
     # via
     #   gradio
@@ -142,7 +129,6 @@ idna==3.10
     #   anyio
     #   httpx
     #   requests
-    #   yarl
 importlib-metadata==8.4.0
     # via opentelemetry-api
 importlib-resources==6.5.2
@@ -162,28 +148,19 @@ jsonschema-specifications==2025.4.1
 kubernetes==33.1.0
     # via chromadb
 langchain==0.3.25
-    # via
-    #   -r requirements.in
-    #   langchain-community
-    #   langchain-tavily
-langchain-chroma==0.2.4
     # via -r requirements.in
-langchain-community==0.3.25
+langchain-chroma==0.2.4
     # via -r requirements.in
 langchain-core==0.3.65
     # via
     #   langchain
     #   langchain-chroma
-    #   langchain-community
     #   langchain-google-genai
-    #   langchain-tavily
     #   langchain-text-splitters
     #   langgraph
     #   langgraph-checkpoint
     #   langgraph-prebuilt
 langchain-google-genai==2.1.5
-    # via -r requirements.in
-langchain-tavily==0.2.3
     # via -r requirements.in
 langchain-text-splitters==0.3.8
     # via langchain
@@ -200,7 +177,6 @@ langgraph-sdk==0.1.70
 langsmith==0.3.45
     # via
     #   langchain
-    #   langchain-community
     #   langchain-core
 markdown-it-py==3.0.0
     # via rich
@@ -208,30 +184,17 @@ markupsafe==3.0.2
     # via
     #   gradio
     #   jinja2
-marshmallow==3.26.1
-    # via dataclasses-json
 mdurl==0.1.2
     # via markdown-it-py
 mmh3==5.1.0
     # via chromadb
 mpmath==1.3.0
     # via sympy
-multidict==6.5.0
-    # via
-    #   aiohttp
-    #   yarl
-mypy==1.16.1
-    # via langchain-tavily
-mypy-extensions==1.1.0
-    # via
-    #   mypy
-    #   typing-inspect
 numpy==2.3.0
     # via
     #   chromadb
     #   gradio
     #   langchain-chroma
-    #   langchain-community
     #   onnxruntime
     #   opencv-python
     #   pandas
@@ -281,23 +244,16 @@ packaging==24.2
     #   huggingface-hub
     #   langchain-core
     #   langsmith
-    #   marshmallow
     #   onnxruntime
     #   pytest
 pandas==2.3.0
     # via gradio
-pathspec==0.12.1
-    # via mypy
 pillow==11.2.1
     # via gradio
 pluggy==1.6.0
     # via pytest
 posthog==5.1.0
     # via chromadb
-propcache==0.3.2
-    # via
-    #   aiohttp
-    #   yarl
 proto-plus==1.26.1
     # via google-ai-generativelanguage
 protobuf==3.20.2
@@ -328,11 +284,8 @@ pydantic==2.11.7
     #   langchain-google-genai
     #   langgraph
     #   langsmith
-    #   pydantic-settings
 pydantic-core==2.33.2
     # via pydantic
-pydantic-settings==2.9.1
-    # via langchain-community
 pydub==0.25.1
     # via gradio
 pygments==2.19.1
@@ -345,6 +298,8 @@ pypika==0.48.9
     # via chromadb
 pyproject-hooks==1.2.0
     # via build
+pysrt==1.1.2
+    # via -r requirements.in
 pytest==8.4.1
     # via -r requirements.in
 python-dateutil==2.9.0.post0
@@ -355,7 +310,6 @@ python-dateutil==2.9.0.post0
 python-dotenv==1.1.0
     # via
     #   -r requirements.in
-    #   pydantic-settings
     #   uvicorn
 python-multipart==0.0.20
     # via gradio
@@ -370,7 +324,6 @@ pyyaml==6.0.2
     #   huggingface-hub
     #   kubernetes
     #   langchain
-    #   langchain-community
     #   langchain-core
     #   uvicorn
 referencing==0.36.2
@@ -383,8 +336,6 @@ requests==2.32.4
     #   huggingface-hub
     #   kubernetes
     #   langchain
-    #   langchain-community
-    #   langchain-tavily
     #   langsmith
     #   posthog
     #   requests-oauthlib
@@ -419,9 +370,7 @@ six==1.17.0
 sniffio==1.3.1
     # via anyio
 sqlalchemy==2.0.41
-    # via
-    #   langchain
-    #   langchain-community
+    # via langchain
 starlette==0.46.2
     # via
     #   fastapi
@@ -431,7 +380,6 @@ sympy==1.14.0
 tenacity==9.1.2
     # via
     #   chromadb
-    #   langchain-community
     #   langchain-core
 tokenizers==0.21.1
     # via chromadb
@@ -454,21 +402,15 @@ typing-extensions==4.14.0
     #   gradio-client
     #   huggingface-hub
     #   langchain-core
-    #   mypy
     #   opentelemetry-sdk
     #   pydantic
     #   pydantic-core
     #   referencing
     #   sqlalchemy
     #   typer
-    #   typing-inspect
     #   typing-inspection
-typing-inspect==0.9.0
-    # via dataclasses-json
 typing-inspection==0.4.1
-    # via
-    #   pydantic
-    #   pydantic-settings
+    # via pydantic
 tzdata==2025.2
     # via pandas
 urllib3==2.5.0
@@ -489,14 +431,10 @@ websockets==15.0.1
     # via
     #   gradio-client
     #   uvicorn
-pysrt==1.1.2
-    # via -r requirements.in
 wrapt==1.17.2
     # via deprecated
 xxhash==3.5.0
     # via langgraph
-yarl==1.20.1
-    # via aiohttp
 zipp==3.23.0
     # via importlib-metadata
 zstandard==0.23.0

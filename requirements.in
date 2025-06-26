@@ -8,13 +8,12 @@ gradio
 langchain
 langgraph
 langchain-google-genai
-langchain-community
 langchain-chroma
+chromadb
 
 # tool
 pypdf
 protobuf
-langchain-tavily
 
 # youtube video + sub
 opencv-python
