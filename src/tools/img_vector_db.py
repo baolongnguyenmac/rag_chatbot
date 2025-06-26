@@ -13,14 +13,16 @@ class ImageVectorDB:
         image_loader = ImageLoader()
         embedding_func = OpenCLIPEmbeddingFunction()
 
+        print('Init img database...')
         self.multimodal_db = chroma_client.get_or_create_collection(
             name=collection_name,
             embedding_function=embedding_func,
             data_loader=image_loader
         )
+        print('~'*80)
 
     def add_video(self, video_path:str, sub_path:str) -> None:
-        print(f'Import video: {video_path.split("/")[-1]}')
+        print(f'Importing video: {video_path.split("/")[-1]}')
         meta_data = VideoChunking.get_video_chunk(video_path, sub_path)
 
         ids = [str(hash(md['transcript'])) for md in meta_data]
@@ -45,7 +47,7 @@ class ImageVectorDB:
             Returns:
                 str: metadata of relevant images
             """
-            print(f'Image retrieve with query: {query}')
+            print(f'[img_retrieve_by_text] Image retrieve with query: {query}')
             reply = self.multimodal_db.query(
                 query_texts=query,
                 n_results=k,
@@ -74,7 +76,7 @@ DURATION:
             Returns:
                 str: metadata of relevant images
             """
-            print(f'Get relevant file of {filepath}')
+            print(f'[img_retrieve_by_img] Get relevant file of {filepath}')
             reply = self.multimodal_db.query(
                 query_images=cv2.imread(filepath),
                 n_results=k,

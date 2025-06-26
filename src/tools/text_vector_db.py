@@ -10,14 +10,16 @@ from langchain_core.tools import tool, BaseTool
 
 class TextVectorDB:
     def __init__(self, collection_name:str, persist_directory:str) -> None:
+        print('Init text database...')
         self.vector_store:Chroma = Chroma(
             collection_name=collection_name,
             embedding_function=GoogleGenerativeAIEmbeddings(model="models/text-embedding-004"),
             persist_directory=persist_directory
         )
+        print('~'*80)
 
     def add_doc(self, filepath:str) -> None:
-        print(f'Import document: {filepath.split("/")[-1]}')
+        print(f'Importing document: {filepath.split("/")[-1]}')
         chunks:list[Document] = TextChunking.get_pdf_chunk(filepath)
 
         # hash content of chunk to obtain an unique id
@@ -28,7 +30,7 @@ class TextVectorDB:
         print('~'*80)
 
     def add_sub(self, filepath:str) -> None:
-        print(f'Import subtitle: {filepath.split("/")[-1]}')
+        print(f'Importing subtitle: {filepath.split("/")[-1]}')
         chunks:list[Document] = TextChunking.get_srt_chunk(filepath)
 
         # hash content of chunk to obtain an unique id
@@ -62,7 +64,7 @@ class TextVectorDB:
                 content (str): A string of relevant content
                 relevant_docs (list[Document]): a list of relevant documents
             """
-            print(f'Text retrieve with query: {query}')
+            print(f'[text_retrieve] Query: {query}')
             relevant_docs = self.vector_store.similarity_search(query=query, k=k)
             content = '\n\n'.join([doc.page_content for doc in relevant_docs])
             print('~'*80)
