@@ -18,9 +18,23 @@ class TextChunking:
     def get_srt_chunk(filepath:str) -> list[Document]:
         trans = pysrt.open(filepath)
         docs = []
-        for transcript in trans:
-            duration = f"Timestamp Start: {str(transcript.start)}; Timestamp End: {str(transcript.end)}."
-            content = duration + transcript.text
+
+        for idx, transcript in enumerate(trans):
+            # create the overlap area with neighbor scripts
+            augmented_context = None
+            if idx == 0:
+                augmented_context = ' '.join([transcript.text, trans[idx+1].text[:len(trans[idx+1].text)//2]])
+            elif idx == len(trans)-1:
+                augmented_context = ' '.join([trans[idx-1].text[len(trans[idx-1].text)//2:], transcript.text])
+            else:
+                augmented_context = ' '.join([trans[idx-1].text[len(trans[idx-1].text)//2:], transcript.text, trans[idx+1].text[:len(trans[idx+1].text)//2]])
+
+            content = f'''
+DURATION:
+    Start timestamp: {str(transcript.start)}
+    End timestamp: {str(transcript.end)}
+SUBTITLE: {augmented_context}
+            '''
             docs.append(Document(page_content=content))
 
         return docs
