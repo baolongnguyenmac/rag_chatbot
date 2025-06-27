@@ -63,10 +63,13 @@ TOOLS:
             latest_content = history[-1]['content']
             # check if the previous of latest_content is a file
             if type(latest_content) is not tuple:
-                pre_latest_content = history[-2]
-                if pre_latest_content['role']=='user' and type(pre_latest_content['content']) is tuple:
-                    latest_content = ' '.join([latest_content, str(pre_latest_content['content'])])
-            print(latest_content)
+                try:
+                    pre_latest_content = history[-2]
+                    if pre_latest_content['role']=='user' and type(pre_latest_content['content']) is tuple:
+                        latest_content = ' '.join([latest_content, str(pre_latest_content['content'])])
+                except:
+                    pass
+            # print(latest_content)
 
             bot_message = graph.invoke(input={"messages": HumanMessage(latest_content)}, config=config)
             bot_message = bot_message['messages'][-1].content
@@ -105,9 +108,9 @@ if __name__=='__main__':
     config = {"configurable": {"thread_id": "chatbot_2"}}
 
     chat_search = ChatRAG(persist_directory='./data/db')
-    # url = 'https://www.youtube.com/watch?v=alDhOLhbkbY' # Vấn Đề Máy Tính Bảng Android
-    # video_path, sub_path = VideoChunking.download_url(url)
-    # chat_search.text_vector_db.add_sub(sub_path)
-    # chat_search.img_vector_db.add_video(video_path, sub_path)
+    url = 'https://www.youtube.com/watch?v=alDhOLhbkbY' # Vấn Đề Máy Tính Bảng Android
+    video_path, sub_path = VideoChunking.download_url(url)
+    chat_search.text_vector_db.add_sub(sub_path)
+    chat_search.img_vector_db.add_video(video_path, sub_path)
 
     chat_search.chat_gradio(config)

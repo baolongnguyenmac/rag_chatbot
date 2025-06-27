@@ -21,13 +21,13 @@ class TextChunking:
 
         for idx, transcript in enumerate(trans):
             # create the overlap area with neighbor scripts
-            augmented_context = None
-            if idx == 0:
-                augmented_context = ' '.join([transcript.text, trans[idx+1].text[:len(trans[idx+1].text)//2]])
-            elif idx == len(trans)-1:
-                augmented_context = ' '.join([trans[idx-1].text[len(trans[idx-1].text)//2:], transcript.text])
-            else:
-                augmented_context = ' '.join([trans[idx-1].text[len(trans[idx-1].text)//2:], transcript.text, trans[idx+1].text[:len(trans[idx+1].text)//2]])
+            augmented_context = transcript.text
+            # if idx == 0:
+            #     augmented_context = ' '.join([transcript.text, trans[idx+1].text[:len(trans[idx+1].text)//3]])
+            # elif idx == len(trans)-1:
+            #     augmented_context = ' '.join([trans[idx-1].text[-len(trans[idx-1].text)//3:], transcript.text])
+            # else:
+            #     augmented_context = ' '.join([trans[idx-1].text[-len(trans[idx-1].text)//3:], transcript.text, trans[idx+1].text[:len(trans[idx+1].text)//3]])
 
             content = f'''
 DURATION:
