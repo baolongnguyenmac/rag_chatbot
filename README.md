@@ -43,7 +43,8 @@
 
 ## TODO
 
-- Viết tool tự động crawl video và subtitle rồi bỏ vào db --> chỉ yêu cầu 1 db
+- Viết tool tự động crawl video và subtitle rồi bỏ vào db
+- Dùng multimodal embedding --> chỉ yêu cầu 1 embedding
 - Tách riêng quá trình chunking khỏi quá trình thêm dữ liệu vào db
 - Deploy
 
