@@ -48,6 +48,6 @@
 - Tách riêng quá trình chunking khỏi quá trình thêm dữ liệu vào db
 - Deploy
 
-## Problems
+## Problem
 
 - Khi chuyển sang video hoạt hình thì truy vấn embedding không còn tốt nữa
