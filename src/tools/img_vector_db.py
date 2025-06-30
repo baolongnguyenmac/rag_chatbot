@@ -25,7 +25,7 @@ class ImageVectorDB:
         print(f'Importing video: {video_path.split("/")[-1]}')
         meta_data = VideoChunking.get_video_chunk(video_path, sub_path)
 
-        ids = [str(hash(md['transcript'])) for md in meta_data]
+        ids = [str(hash(md['frame_path'])) for md in meta_data]
         uris = [md['frame_path'] for md in meta_data]
         self.multimodal_db.add(
             ids=ids,

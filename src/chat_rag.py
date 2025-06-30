@@ -1,5 +1,6 @@
 from tools.text_vector_db import TextVectorDB
 from tools.img_vector_db import ImageVectorDB
+from tools.crawler import Crawler
 from chatbot import ChatBot
 from extractor.video_chunking import VideoChunking
 
@@ -17,21 +18,24 @@ class ChatRAG(ChatBot):
         super().__init__()
         self.text_vector_db = TextVectorDB(text_collection_name, persist_directory)
         self.img_vector_db = ImageVectorDB(img_collection_name, persist_directory)
+        self.crawler = Crawler(self.text_vector_db, self.img_vector_db)
 
     def init_graph(self):
         sys_prompt = '''
 MISSION: You are given a video and a corresponding subtitle file, stored in 2 separate vector databases. Your task is to answer user questions by querying one (or both) of the databases using the provided tools.
 
 TOOLS:
-    - Query the subtitle using `text_retrieve` tool (input is a string)
-    - Query the image using `img_retrieve_by_img` tool (input is a path to the query image)
-    - Query the image using `img_retrieve_by_text` tool (input is a description to search for images)
+    - `crawl`: Download and embed video, subtitle into image and text vector database. Input is an YouTube URL
+    - `text_retrieve`: Query the subtitle. input is a string
+    - `img_retrieve_by_img`: Query the image using. Input is a path to the query image
+    - `img_retrieve_by_text`: Query the image. input is a description to search for images
 '''
 
         memory = MemorySaver()
         return create_react_agent(
             model=self.llm,
             tools=[
+                self.crawler.get_crawler(),
                 self.text_vector_db.get_text_db_searcher(k=5),
                 self.img_vector_db.search_img_by_text(k=5),
                 self.img_vector_db.search_img_by_img(k=5),
@@ -108,9 +112,10 @@ if __name__=='__main__':
     config = {"configurable": {"thread_id": "chatbot_2"}}
 
     chat_search = ChatRAG(persist_directory='./data/db')
-    url = 'https://www.youtube.com/watch?v=alDhOLhbkbY' # Vấn Đề Máy Tính Bảng Android
-    video_path, sub_path = VideoChunking.download_url(url)
-    chat_search.text_vector_db.add_sub(sub_path)
-    chat_search.img_vector_db.add_video(video_path, sub_path)
+    # # url = 'https://www.youtube.com/watch?v=alDhOLhbkbY' # Vấn Đề Máy Tính Bảng Android
+    # url = "https://www.youtube.com/watch?v=xnaD6J-Tl1k&list=RDxnaD6J-Tl1k&start_radio=1&ab_channel=YuchenDuan%28Sandy%29"
+    # video_path, sub_path = VideoChunking.download_url(url)
+    # chat_search.text_vector_db.add_sub(sub_path)
+    # chat_search.img_vector_db.add_video(video_path, sub_path)
 
     chat_search.chat_gradio(config)
