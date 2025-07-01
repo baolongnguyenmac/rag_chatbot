@@ -4,6 +4,7 @@ demo*
 .github
 *.pdf
 assets
+img
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

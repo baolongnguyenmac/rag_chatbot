@@ -7,17 +7,20 @@ gradio
 # lang stuff
 langchain
 langgraph
+langchain_community
 langchain-google-genai
 langchain-chroma
-chromadb
 
 # tool
 pypdf
 protobuf
+chromadb
+open-clip-torch
 
 # youtube video + sub
 opencv-python
 pytubefix
 pysrt
+opencv-python
 
 pytest

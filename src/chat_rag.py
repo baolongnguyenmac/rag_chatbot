@@ -2,7 +2,6 @@ from tools.text_vector_db import TextVectorDB
 from tools.img_vector_db import ImageVectorDB
 from tools.crawler import Crawler
 from chatbot import ChatBot
-from extractor.video_chunking import VideoChunking
 
 from langchain_core.messages import SystemMessage, HumanMessage
 from langgraph.prebuilt import create_react_agent

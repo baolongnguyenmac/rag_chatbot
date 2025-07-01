@@ -1,3 +1,12 @@
+---
+title: VideoRAGDocker
+emoji: 🐳
+colorFrom: purple
+colorTo: gray
+sdk: docker
+app_port: 7860
+---
+
 [![CI and CD to HuggingSpace](https://github.com/baolongnguyenmac/rag_chatbot/actions/workflows/main.yml/badge.svg)](https://github.com/baolongnguyenmac/rag_chatbot/actions/workflows/main.yml)
 
 # Video RAG Chatbot
@@ -22,30 +31,26 @@
 
 ## Demo
 
-- Giới thiệu về flow (bên trên)
+- Bật và giới thiệu video
+- Khởi chạy chatbot: `python -m chat_rag`: Giới thiệu về quá trình khởi tạo mọi thứ
 
-- Chạy code
-    - Xóa database, để lại video + sub
-    - Bật và giới thiệu video
-    - Khởi chạy chatbot: `python -m chat_rag`: Giới thiệu về quá trình khởi tạo mọi thứ
+- Bật file phụ đề và frame cùng với prompt
+- Prompt:
+    - Hỏi đáp qua hình ảnh:
+        - Input 1 hình ảnh. Prompt: `list out all moments (timestamp, subtitle, path to frame) that are related to this image`
+        - Input 1 mô tả hình ảnh. Prompt: `according to the video, list out all moments that are related to or contains the image of an iPhone`
 
-    - Bật file phụ đề và frame cùng với prompt
-    - Prompt:
-        - Hỏi đáp qua hình ảnh: `list out all moments (timestamp, subtitle, path to frame) that are related to this image`
+    - Hỏi đáp qua phụ đề:
+        - `according to the video, what could be addressed if there was something special that you could do on a tablet?`
+        - `sample 3 moments that are related to the term "Android tablet"`
 
-        - Hỏi đáp qua phụ đề:
-            - `according to the video, what could be addressed if there was something special that you could do on a tablet?`
-            - `sample 3 moments that are related to the term "Android tablet"`
+## Ideas
 
-        - Hỏi đáp qua mô tả hình ảnh: `according to the video, list out all moments that are related to or contains the image of an iPhone`
+[*] Viết tool tự động crawl video và subtitle rồi bỏ vào db
 
-- Trình bày về TODO
-
-## TODO
-
-- Viết tool tự động crawl video và subtitle rồi bỏ vào db
-- Dùng multimodal embedding --> chỉ yêu cầu 1 embedding
-- Tách riêng quá trình chunking khỏi quá trình thêm dữ liệu vào db
+- Dùng multimodal embedding để encode 1 pair (img + sub) rồi bỏ vào DB. Tôi không dùng bởi vì nó yêu cầu customize vector db và embedding (mất thời gian và thiếu khả năng mở rộng)
+- Dùng multimodal vector db để lưu chung text và img vào cùng 1 db. Embedding builtin của ChromaDB hơi gà và config GoogleAPI để nó đọc được ảnh thì hơi mất thời gian. Tôi dùng text embedding của Google và embedding function của Chroma để encode
+- Tách riêng quá trình chunking khỏi quá trình thêm dữ liệu vào db querying
 - Deploy
 
 ## Problem

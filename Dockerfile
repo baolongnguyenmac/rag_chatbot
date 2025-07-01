@@ -1,21 +1,22 @@
 FROM python:3.11-slim
 
-# Set up a new user named "user" with user ID 1000
+WORKDIR /code
+
+COPY ./requirements.txt /code/requirements.txt
+
+RUN apt update -y
+RUN apt install -y ffmpeg libsm6 libxext6
+RUN pip install --no-cache-dir --upgrade -r requirements.txt
+
 RUN useradd -m -u 1000 user
-
-# Switch to the "user" user
 USER user
-
-# Set home to the user's home directory
 ENV HOME=/home/user \
 	PATH=/home/user/.local/bin:$PATH
 
-WORKDIR /app
+WORKDIR $HOME/app
 
-COPY . .
-
-RUN pip install --no-cache-dir --upgrade -r requirements.txt
+COPY --chown=user . $HOME/app
 
 EXPOSE 7860
 
-CMD python -m main
+CMD python -m chat_rag
