@@ -94,3 +94,8 @@ The chatbot allows searching on the Internet and storing/reading PDF files for Q
 - Create a [Space](https://huggingface.co/spaces) (specify to use Docker)
 - Add the content in the file `.env` to Secret and Variable in the space. These secrets and variables will be exported to be system variable at runtime
 - Setup `main.yml` (`push_HF_space`)
+
+## Read more
+
+https://huggingface.co/learn/cookbook/rag_evaluation
+https://docs.ragas.io/en/stable/concepts/metrics/available_metrics/

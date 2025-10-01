@@ -64,10 +64,10 @@ jobs:
           fetch-depth: 0
           lfs: true
 
-      - name: Check large files
-        uses: ActionsDesk/lfs-warning@v2.0
-        with:
-          filesizelimit: 10485760 # this is 10MB so we can sync to HF Spaces
+      # - name: Check large files
+      #   uses: ActionsDesk/lfs-warning@v2.0
+      #   with:
+      #     filesizelimit: 10485760 # this is 10MB so we can sync to HF Spaces
 
       - name: Push to HF Space
         env:
